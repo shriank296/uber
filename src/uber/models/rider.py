@@ -1,11 +1,15 @@
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID as PUUID
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from uber.base import Base
-from uber.mixin import TimeStampMixin
+from uber.models.base import Base
+from uber.models.mixin import TimeStampMixin
+
+if TYPE_CHECKING:
+    from uber.models.ride import Ride
 
 
 class Rider(TimeStampMixin, Base):
@@ -18,3 +22,4 @@ class Rider(TimeStampMixin, Base):
     first_name: Mapped[str] = mapped_column(String(40))
     last_name: Mapped[str | None] = mapped_column(String(40))
     email: Mapped[str] = mapped_column(String(100), unique=True)
+    rides: Mapped[list["Ride"]] = relationship(back_populates="rider")
