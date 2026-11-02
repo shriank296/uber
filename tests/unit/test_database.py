@@ -5,12 +5,12 @@ from uber.database import Database
 
 
 @pytest.fixture
-def database(test_db_url):
+async def database(test_db_url):
     test_db = Database(test_db_url)
     try:
         yield test_db
     finally:
-        test_db.dispose()
+        await test_db.dispose()
 
 
 async def test_db_connection_successful(database):
