@@ -4,12 +4,16 @@ from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 from uber.models import Base, Driver, Ride, Rider
-from uber.settings import settings
+from uber.settings import get_app_settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.migration_database_url)
+# configuration for testing
+settings = get_app_settings()
+database_url = config.get_main_option("sqlalchemy.url")
+if not database_url:
+    config.set_main_option("sqlalchemy.url", settings.migration_database_url)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

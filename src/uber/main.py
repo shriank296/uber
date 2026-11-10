@@ -18,7 +18,7 @@ def create_app(settings: AppSettings):
             await database.dispose()
 
     app = FastAPI(
-        title=settings.PROJECT_NAME,
+        title=settings.project_name,
         lifespan=lifespan,
     )
 
