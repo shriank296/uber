@@ -5,10 +5,10 @@ from pydantic_settings import BaseSettings
 
 class AppSettings(BaseSettings):
     database_url: str
-    migration_database_url: str | None = None
+    migration_database_url: str
     project_name: str = "Uber"
 
 
 @lru_cache
-def get_app_settings():
-    return AppSettings()
+def get_app_settings() -> AppSettings:
+    return AppSettings()  # type: ignore[call-arg] # Values loaded from environment.

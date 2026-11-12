@@ -14,7 +14,7 @@ from uber.settings import AppSettings
 @pytest.fixture(scope="session")
 def test_db_url() -> Generator[str]:
 
-    def run_alembic_migrations(container_db_url: str):
+    def run_alembic_migrations(container_db_url: str) -> None:
         alembic_cfg = Config("alembic.ini")
         alembic_cfg.set_main_option("sqlalchemy.url", container_db_url)
         command.upgrade(alembic_cfg, "head")
@@ -26,15 +26,16 @@ def test_db_url() -> Generator[str]:
 
 
 @pytest.fixture(scope="session")
-def test_settings(test_db_url) -> AppSettings:
+def test_settings(test_db_url: str) -> AppSettings:
     return AppSettings(
         database_url=test_db_url,
         project_name="Uber Test",
+        migration_database_url=test_db_url.replace("+asyncpg", "+psycopg"),
     )
 
 
 @pytest_asyncio.fixture
-async def database(test_db_url) -> AsyncGenerator[Database]:
+async def database(test_db_url: str) -> AsyncGenerator[Database]:
     test_db = Database(test_db_url)
     try:
         yield test_db
@@ -43,7 +44,7 @@ async def database(test_db_url) -> AsyncGenerator[Database]:
 
 
 @pytest_asyncio.fixture
-async def session(database) -> AsyncGenerator[AsyncSession]:
+async def session(database: Database) -> AsyncGenerator[AsyncSession]:
     session_generator = database.get_async_session()
     session = await anext(session_generator)
     try:

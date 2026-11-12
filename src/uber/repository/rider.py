@@ -1,5 +1,4 @@
 import logging
-import re
 from uuid import UUID
 
 from sqlalchemy import select
@@ -20,7 +19,7 @@ class RiderRepository:
         result = await self.session.execute(statement)
         return result.scalar_one_or_none()
 
-    async def create(self, rider: Rider) -> Rider | None:
+    async def create(self, rider: Rider) -> Rider:
         """Create a rider"""
         self.session.add(rider)
         # We do only flush, insert will execute and database value generated but transaction is not committed yet. Service layer should own the transaction and decide when to commit or rollback.

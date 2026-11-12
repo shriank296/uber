@@ -3,7 +3,7 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
 from alembic import context
-from uber.models import Base, Driver, Ride, Rider
+from uber.models import Base
 from uber.settings import get_app_settings
 
 # this is the Alembic Config object, which provides

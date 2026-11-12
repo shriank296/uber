@@ -46,3 +46,8 @@ asyncio_mode = "auto"
 mypy_path = "src"
 namespace_packages = true
 explicit_package_bases = true
+strict = true
+
+[[tool.mypy.overrides]]
+module = "tests.factories.*"
+disallow_untyped_calls = false

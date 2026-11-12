@@ -1,10 +1,11 @@
-import factory
-from factory import Faker, Sequence
+from factory.base import Factory
+from factory.declarations import Sequence
+from factory.faker import Faker
 
 from uber.models import Rider
 
 
-class RiderFactory(factory.Factory):
+class RiderFactory(Factory[Rider]):
     class Meta:
         model = Rider
 
