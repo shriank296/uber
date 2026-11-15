@@ -1,3 +1,4 @@
+from uuid import uuid4
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,3 +40,31 @@ async def test_get_all_available_drivers(
 
     assert len(result) == 5
     assert all(driver.status == DriverStatus.AVAILABLE for driver in result)
+
+
+async def test_update_status_successful(
+    session: AsyncSession, driver_repository: DriverRepository
+) -> None:
+    driver = DriverFactory.build(status=DriverStatus.ON_TRIP)
+
+    session.add(driver)
+    await session.flush()
+
+    result = await driver_repository.update_status(
+        driver_id=driver.id, status=DriverStatus.AVAILABLE
+    )
+
+    assert result is not None
+    assert result.status == DriverStatus.AVAILABLE
+
+
+async def test_update_status_driver_not_found(
+    driver_repository: DriverRepository,
+) -> None:
+    driver_id = uuid4()
+
+    result = await driver_repository.update_status(
+        driver_id=driver_id, status=DriverStatus.AVAILABLE
+    )
+
+    assert result is None

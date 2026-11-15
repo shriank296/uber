@@ -32,3 +32,15 @@ class DriverRepository:
         """Get drivers whose status is avaialble"""
         statement = select(Driver).where(Driver.status == DriverStatus.AVAILABLE)
         return (await self.session.scalars(statement)).all()
+
+    async def update_status(
+        self, driver_id: UUID, status: DriverStatus
+    ) -> Driver | None:
+        """Update driver status"""
+        driver = await self.session.get(Driver, driver_id)
+        if driver is None:
+            return None
+        driver.status = status
+        await self.session.flush()
+
+        return driver
