@@ -40,7 +40,7 @@ async def test_create_rider_success(
 
 async def test_get_rides_by_rider(
     session: AsyncSession, ride_repository: RideRepository
-):
+) -> None:
     rider = RiderFactory.build()
     rides = RideFactory.build_batch(3, rider=rider)
     other_ride = RideFactory.build()
@@ -56,7 +56,7 @@ async def test_get_rides_by_rider(
 
 async def test_get_rides_by_rider_returns_empty_list(
     session: AsyncSession, ride_repository: RideRepository
-):
+) -> None:
 
     result = await ride_repository.get_rides_by_rider(uuid4())
 

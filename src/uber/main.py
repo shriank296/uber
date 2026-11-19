@@ -30,9 +30,9 @@ def create_app(settings: AppSettings) -> FastAPI:
         title=settings.project_name,
         lifespan=lifespan,
     )
-    app.add_exception_handler(AppException, app_exception_handler)
-    app.add_exception_handler(OperationalError, sqlalchemy_operational_error)
-    app.add_exception_handler(IntegrityError, sqlalchemy_integrity_error)
+    app.add_exception_handler(AppException, app_exception_handler)  # type: ignore[arg-type]
+    app.add_exception_handler(OperationalError, sqlalchemy_operational_error)  # type: ignore[arg-type]
+    app.add_exception_handler(IntegrityError, sqlalchemy_integrity_error)  # type: ignore[arg-type]
 
     app.include_router(rider_router)
 
