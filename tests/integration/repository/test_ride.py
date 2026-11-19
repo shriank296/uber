@@ -9,11 +9,6 @@ from uber.models.ride import Ride
 from uber.repository.ride import RideRepository
 
 
-@pytest.fixture
-def ride_repository(session: AsyncSession) -> RideRepository:
-    return RideRepository(session)
-
-
 async def test_get_by_id_returns_when_ride_exists(
     session: AsyncSession, ride_repository: RideRepository
 ) -> None:

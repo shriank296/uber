@@ -3,11 +3,15 @@ from collections.abc import AsyncGenerator, Generator
 import pytest
 import pytest_asyncio
 from alembic.config import Config
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
 from sqlalchemy.ext.asyncio import AsyncSession
 from testcontainers.community.postgres import PostgresContainer
 
 from alembic import command
+from uber.api.dependencies import get_session
 from uber.database import Database
+from uber.main import create_app
 from uber.settings import AppSettings
 
 
@@ -45,9 +49,13 @@ async def database(test_db_url: str) -> AsyncGenerator[Database]:
 
 @pytest_asyncio.fixture
 async def session(database: Database) -> AsyncGenerator[AsyncSession]:
-    session_generator = database.get_async_session()
-    session = await anext(session_generator)
-    try:
-        yield session
-    finally:
-        await session.aclose()
+    async for db_session in database.get_async_session():
+        yield db_session
+
+
+@pytest.fixture
+def test_client(test_settings: AppSettings) -> Generator[TestClient]:
+    app = create_app(settings=test_settings)
+    with TestClient(app) as client:
+        yield client
+    app.dependency_overrides.clear()
