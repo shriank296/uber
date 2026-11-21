@@ -49,4 +49,5 @@ class RiderRepository:
     async def count_all_riders(self) -> int:
         """Get total number of riders"""
         statement = select(func.count()).select_from(Rider)
-        return await self.session.scalar(statement)
+        result = await self.session.execute(statement)
+        return result.scalar_one()

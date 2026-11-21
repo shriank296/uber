@@ -36,7 +36,8 @@ async def get_rider(
     rider_id: UUID,
     rider_service: Annotated[RiderService, Depends(get_rider_service)],
 ) -> ResponseRiderSchema:
-    return await rider_service.get_rider(rider_id)
+    rider = await rider_service.get_rider(rider_id)
+    return ResponseRiderSchema.model_validate(rider)
 
 
 @rider_router.get(

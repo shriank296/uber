@@ -4,7 +4,6 @@ from uuid import UUID, uuid4
 import pytest
 from fastapi.testclient import TestClient
 
-from uber.exceptions.rider import RiderNotFound
 from uber.models.rider import Rider
 
 

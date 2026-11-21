@@ -1,5 +1,5 @@
 from collections.abc import AsyncGenerator
-from typing import Annotated
+from typing import Annotated, cast
 
 from fastapi import Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +10,7 @@ from uber.services.rider import RiderService
 
 
 async def get_db(request: Request) -> Database:
-    return request.app.state.database
+    return cast(Database, request.app.state.database)
 
 
 async def get_session(

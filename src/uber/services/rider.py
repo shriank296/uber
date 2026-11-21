@@ -32,7 +32,7 @@ class RiderService:
             async with self.session.begin():
                 created_rider = await self.rider_repository.create(rider)
         except IntegrityError as exc:
-            if "uq_riders_email" in exc.orig.__cause__.constraint_name:
+            if "uq_riders_email" in exc.orig.__cause__.constraint_name:  # type: ignore
                 raise DuplicateRiderEmail(email=rider.email) from exc
             raise
 
@@ -58,8 +58,10 @@ class RiderService:
 
         total_pages = math.ceil(total_riders / page_size)
 
+        riders_schema = [ResponseRiderSchema.model_validate(rider) for rider in riders]
+
         return PaginatedResponse[ResponseRiderSchema](
-            items=riders,
+            items=riders_schema,
             page_number=page_number,
             page_size=page_size,
             total_items=total_riders,

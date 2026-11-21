@@ -5,6 +5,8 @@ import pytest_asyncio
 from alembic.config import Config
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine, text
+from sqlalchemy.engine import Engine, make_url
 from sqlalchemy.ext.asyncio import AsyncSession
 from testcontainers.community.postgres import PostgresContainer
 
@@ -38,6 +40,24 @@ def test_settings(test_db_url: str) -> AppSettings:
     )
 
 
+@pytest.fixture(scope="session")
+def cleanup_engine(test_settings: AppSettings) -> Generator[Engine]:
+    database_url = make_url(test_settings.database_url).set(
+        drivername="postgresql+psycopg"
+    )
+    engine = create_engine(database_url)
+
+    yield engine
+
+    engine.dispose()
+
+
+@pytest.fixture
+def clean_database(cleanup_engine: Engine) -> None:
+    with cleanup_engine.begin() as connection:
+        connection.execute(text("TRUNCATE TABLE riders, drivers, rides"))
+
+
 @pytest_asyncio.fixture
 async def database(test_db_url: str) -> AsyncGenerator[Database]:
     test_db = Database(test_db_url)
@@ -54,7 +74,9 @@ async def session(database: Database) -> AsyncGenerator[AsyncSession]:
 
 
 @pytest.fixture
-def test_client(test_settings: AppSettings) -> Generator[TestClient]:
+def test_client(
+    test_settings: AppSettings, clean_database: None
+) -> Generator[TestClient]:
     app = create_app(settings=test_settings)
     with TestClient(app) as client:
         yield client
