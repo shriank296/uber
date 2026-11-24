@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from sqlalchemy.exc import IntegrityError, OperationalError
 
+from uber.api.driver import driver_router
 from uber.api.rider import rider_router
 from uber.database import Database
 from uber.exceptions.base import AppException
@@ -35,6 +36,7 @@ def create_app(settings: AppSettings) -> FastAPI:
     app.add_exception_handler(IntegrityError, sqlalchemy_integrity_error)  # type: ignore[arg-type]
 
     app.include_router(rider_router)
+    app.include_router(driver_router)
 
     return app
 

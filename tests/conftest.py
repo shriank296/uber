@@ -3,7 +3,6 @@ from collections.abc import AsyncGenerator, Generator
 import pytest
 import pytest_asyncio
 from alembic.config import Config
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine, make_url
@@ -11,7 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from testcontainers.community.postgres import PostgresContainer
 
 from alembic import command
-from uber.api.dependencies import get_session
 from uber.database import Database
 from uber.main import create_app
 from uber.settings import AppSettings

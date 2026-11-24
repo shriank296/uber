@@ -1,4 +1,3 @@
-import logging
 from collections.abc import Sequence
 from uuid import UUID
 
@@ -6,7 +5,6 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from uber.models import Ride
-from uber.models.enums import RideStatus
 
 
 class RideRepository:

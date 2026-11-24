@@ -1,7 +1,6 @@
 from collections.abc import Iterable
 from uuid import UUID, uuid4
 
-import pytest
 from fastapi.testclient import TestClient
 
 from uber.models.rider import Rider
